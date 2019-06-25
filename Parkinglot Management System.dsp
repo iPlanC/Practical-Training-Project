@@ -95,11 +95,14 @@ SOURCE=".\Parkinglot Management System.c"
 
 SOURCE=.\function.h
 # End Source File
+# Begin Source File
+
+SOURCE=.\included.h
+# End Source File
 # End Group
 # Begin Group "Resource Files"
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
-# End Group
 # Begin Source File
 
 SOURCE=".\Function List.txt"
@@ -108,5 +111,6 @@ SOURCE=".\Function List.txt"
 
 SOURCE=.\TODO.TXT
 # End Source File
+# End Group
 # End Target
 # End Project

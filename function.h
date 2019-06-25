@@ -2,9 +2,7 @@
 #define totalspace			100
 #define realusername		"PlanC"
 #define realuserpassword	"password"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "included.h"
 
 int cars = 0;
 int costperhour = 2;
@@ -94,11 +92,14 @@ int Statues() {
 
 	if (strcmp(command, "help") == 0) {
 		printf("\tcls  - 清理历史操作\n");
+		printf("\tearn - 显示历史收入(TODO)\n");
 		printf("\texit - 退出此程序\n");
 		printf("\thelp - 输出此列表\n");
 		printf("\tjump - 将时间增加 n 小时\n");
+		printf("\tleft - 登记指定车牌号的车离库(TODO)\n");
 		printf("\tmap  - 查看停车场状况\n");
 		printf("\tpark - 新增入库车辆\n");
+		printf("\tPMS  - 显示自述文字(TODO)\n");
 		return 2;
 	}
 
