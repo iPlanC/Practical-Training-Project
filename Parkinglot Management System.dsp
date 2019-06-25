@@ -102,6 +102,10 @@ SOURCE=.\function.h
 # End Group
 # Begin Source File
 
+SOURCE=".\Function List.txt"
+# End Source File
+# Begin Source File
+
 SOURCE=.\TODO.TXT
 # End Source File
 # End Target

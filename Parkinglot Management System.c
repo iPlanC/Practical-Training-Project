@@ -10,7 +10,7 @@ int main(int argc, char* argv[]) {
 	printf("| 欢迎来到停车场管理系统 |\n");
 	printf("+------------------------+\n");
 
-	if (login() != 0) {
+	if (Login() != 0) {
 		printf("密码错误已至三次，请核对后重新运行。");
 		return 1;
 	}
@@ -18,6 +18,6 @@ int main(int argc, char* argv[]) {
 	getchar();
 	system("cls");
 	printf("输入 \"help\" 以显示指令集\n");
-	while (statues() != 1);
+	while (Statues() != 0);
 	return 0;
 }
