@@ -64,6 +64,10 @@ int statues() {
 	char command[20] = {"\0"};
 	printf("PMS >");
 	scanf("%s", command);
+	if (strcmp(command, "cls") == 0) {
+		system("cls");
+		return 4;
+	}
 	if (strcmp(command, "park") == 0) {
 		cars++;
 		spacepointer++;
@@ -73,9 +77,11 @@ int statues() {
 		return 3;
 	}
 	if (strcmp(command, "help") == 0) {
+		printf("\tcls  - 清理历史操作\n");
 		printf("\texit - 退出此程序\n");
 		printf("\thelp - 输出此列表\n");
 		printf("\tjump - 将时间增加一小时\n");
+		printf("\tmap  - 查看停车场状况\n");
 		printf("\tpark - 新增入库车辆\n");
 		return 2;
 	}

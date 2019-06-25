@@ -18,6 +18,6 @@ int main(int argc, char* argv[]) {
 	getchar();
 	system("cls");
 	printf("输入 \"help\" 以显示指令集\n");
-	while (statues() == 1);
+	while (statues() != 1);
 	return 0;
 }
