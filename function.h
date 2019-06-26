@@ -98,8 +98,11 @@ void Leave() {
 			flag = 1;
 			printf("车牌号 \"%s\" 请求离库，需挪动 \"%d\" 辆车，车库剩余 \"%d\" 辆车。\n", serial, spacepointer - i - 1, spacepointer - 1);
 			for (; i < spacepointer; i++) {
-				
+				strcpy(Parkinglot.ParkingSpace[i - 1].carserial, Parkinglot.ParkingSpace[i].carserial);
+				Parkinglot.ParkingSpace[i - 1].parkserial = Parkinglot.ParkingSpace[i].parkserial;
+				Parkinglot.ParkingSpace[i - 1].time = Parkinglot.ParkingSpace[i].time;
 			}
+			spacepointer--;
 			break;
 		}
 	}
