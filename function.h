@@ -161,7 +161,7 @@ int Statues() {
 	}
 
 	if (strcmp(command, "PMS") == 0) {
-		system("notepad .\\readme.txt");
+		system("notepad .\\LICENSE");
 		return 8;
 	}
 
