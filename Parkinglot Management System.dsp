@@ -109,10 +109,6 @@ SOURCE=".\Function List.txt"
 # End Source File
 # Begin Source File
 
-SOURCE=.\readme.txt
-# End Source File
-# Begin Source File
-
 SOURCE=.\TODO.TXT
 # End Source File
 # End Group
