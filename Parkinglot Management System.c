@@ -9,7 +9,7 @@ int main(int argc, char* argv[]) {
 	printf("+------------------------+\n");
 
 	if (Login() != 0) {
-		printf("密码错误已至三次，请核对后重新运行。");
+		printf("错误已至三次，请核对后重新运行。\n");
 		return 1;
 	}
 	printf("登录成功，按任意键继续......\n");
