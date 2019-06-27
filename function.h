@@ -8,7 +8,7 @@ int cars = 0;
 int runninghour = 0;
 int runningdays = 0;
 int totalearn = 0;
-int costperhour = 2;
+int costperhour = 1;
 int spacepointer = 0;
 int sidewaypointer = 0;
 
@@ -122,7 +122,7 @@ void Leave() {
 			break;
 		}
 	}
-	totalearn += Parkinglot.ParkingSpace[i].time * costperhour;
+	totalearn = totalearn + Parkinglot.ParkingSpace[i].time * costperhour;
 	if (flag != 1) {
 		printf("未找到车牌号，请核对后重试。\n");
 		return;
