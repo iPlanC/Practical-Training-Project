@@ -1,10 +1,12 @@
-#define RELEASE
-#define totalspace			100
+#define DEBUG
+#define totalspace			1
 #define realusername		"PlanC"
 #define realuserpassword	"password"
 #include "included.h"
 
 int cars = 0;
+int runninghour = 0;
+int runningdays = 0;
 int totalearn = 0;
 int costperhour = 2;
 int spacepointer = 0;
@@ -66,12 +68,12 @@ int Login() {
 }
 
 void Count_earn() {
-	
+	printf("共计在 \"%d\" 天 \"%d\" 小时，收入 \"%d\" rmb。\n", runninghour / 24, runninghour % 24, totalearn);
 }
 
 void Help() {
 	printf("\tcls  - 清理历史操作\n");
-	//printf("\tearn - 显示历史收入(TODO)\n");
+	printf("\tearn - 显示历史收入\n");
 	printf("\texit - 退出此程序\n");
 	printf("\thelp - 输出此列表\n");
 	printf("\tjump - 将时间增加 n 小时\n");
@@ -89,6 +91,7 @@ void Time_jump() {
 	scanf("%d", &hour);
 	for (i = 0; i < spacepointer; i++) {
 		Parkinglot.ParkingSpace[i].time += hour;
+		runninghour += hour;
 	}
 }
 
@@ -101,14 +104,16 @@ void Leave() {
 	for (i = 0; i < spacepointer; i++) {
 		if (strcmp(Parkinglot.ParkingSpace[i].carserial, serial) == 0) {
 			flag = 1;
-			printf("车牌号 \"%s\" 请求离库，需挪动 \"%d\" 辆车，车库剩余 \"%d\" 辆车。\n", serial, spacepointer - i - 1, spacepointer - 1);
+			printf("车牌号 \"%s\" 请求离库，需挪动 \"%d\" 辆车，车库剩余 \"%d\" 辆车，收取停车费 \"%d\" 元。\n", serial, spacepointer - i - 1, spacepointer - 1, Parkinglot.ParkingSpace[i].time * costperhour);
 			for (; i < spacepointer; i++) {
 				strcpy(Parkinglot.ParkingSpace[i - 1].carserial, Parkinglot.ParkingSpace[i].carserial);
 				Parkinglot.ParkingSpace[i - 1].parkserial = Parkinglot.ParkingSpace[i].parkserial;
 				Parkinglot.ParkingSpace[i - 1].time = Parkinglot.ParkingSpace[i].time;
 			}
 			if (sidewaypointer != 0) {
-				strcpy(Parkinglot.ParkingSpace[totalspace].carserial, Sideway.ParkingSpace[0].carserial);
+				strcpy(Parkinglot.ParkingSpace[totalspace - 1].carserial, Sideway.ParkingSpace[0].carserial);
+				Parkinglot.ParkingSpace[totalspace - 1].parkserial = totalspace;
+				Parkinglot.ParkingSpace[totalspace - 1].time = 0;
 				sidewaypointer--;
 			}
 			else {
@@ -117,6 +122,7 @@ void Leave() {
 			break;
 		}
 	}
+	totalearn += Parkinglot.ParkingSpace[i].time * costperhour;
 	if (flag != 1) {
 		printf("未找到车牌号，请核对后重试。\n");
 		return;
@@ -128,8 +134,9 @@ void Show_map() {
 	printf("共有 %d 辆汽车\n", spacepointer);
 	printf("车 位\t车 牌\t时 间\t缴 费\n");
 	for (i = 0; i < spacepointer; i++) {
-		printf("%3d\t%s\t%d h\t%d rmb\n", Parkinglot.ParkingSpace[i].parkserial, Parkinglot.ParkingSpace[i].carserial, Parkinglot.ParkingSpace[i].time, Parkinglot.ParkingSpace[i].time * costperhour);
+		printf("%3d\t%s\t%d h\t%d rmb\n", Parkinglot.ParkingSpace[i].parkserial + 1, Parkinglot.ParkingSpace[i].carserial, Parkinglot.ParkingSpace[i].time, Parkinglot.ParkingSpace[i].time * costperhour);
 	}
+	printf("共有 \"%d\" 辆车在便道等待。\n", sidewaypointer);
 }
 
 void Park() {
@@ -137,7 +144,7 @@ void Park() {
 	printf("car serial:");
 	scanf("%s", serial);
 	//scanf("%s", Parkinglot.ParkingSpace[spacepointer].carserial);
-	if (spacepointer <= totalspace) {
+	if (spacepointer < totalspace) {
 		strcpy(Parkinglot.ParkingSpace[spacepointer].carserial, serial);
 		printf("车牌号 \"%s\" 已停放\n", Parkinglot.ParkingSpace[spacepointer].carserial);
 		spacepointer++;
