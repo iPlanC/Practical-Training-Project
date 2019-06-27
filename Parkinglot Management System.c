@@ -16,6 +16,7 @@ int main(int argc, char* argv[]) {
 	getchar();
 	system("cls");
 	printf("输入 \"help\" 以显示指令集\n");
+	Help();
 	while (Statues() != 0);
 	return 0;
 }

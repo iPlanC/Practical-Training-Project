@@ -1,25 +1,37 @@
 #define DEBUG
-#define totalspace			1
+#define Defaultspace		1
 #define realusername		"PlanC"
 #define realuserpassword	"password"
 #include "included.h"
 
 int cars = 0;
+int totalspace = 1;
+float VIPdiscount = 0.0;
+int VIPcounter = 0;
 int runninghour = 0;
 int runningdays = 0;
-int totalearn = 0;
+float totalearn = 0.0;
 int costperhour = 1;
 int spacepointer = 0;
 int sidewaypointer = 0;
 
+struct vip {
+	char carserial[5];
+};
+
+struct viplist {
+	struct vip VIP[100];
+} VIPlist;
+
 struct parkingspace {
 	int time;
+	int isVIP;
 	int parkserial;
 	char carserial[5];
 };
 
 struct Parkinglot {
-	struct parkingspace ParkingSpace[totalspace];
+	struct parkingspace ParkingSpace[Defaultspace];
 } Parkinglot;
 
 struct sideway {
@@ -67,11 +79,44 @@ int Login() {
 	return 0;
 }
 
+void Config() {
+	int i = 0;
+	int select = 0;
+	char serial[5] = {'\0'};
+	printf("1.更改每小时停车费(现为 \"%d\" )\n", costperhour);
+	printf("2.更改VIP客户列表(现有 \"%d\" 位)\n", VIPcounter);
+	printf("3.更改VIP折扣(现为 \"%.0f\" 折)\n", VIPdiscount * 10);
+	printf("4.更改停车场车位数(现为 \"%d\" )\n", totalspace);
+	printf("请输入选项以更改相应内容\n");
+	scanf("%d", &select);
+	switch (select) {
+	case 1:
+		printf("请输入更改后的停车费 >");
+		scanf("%d", &costperhour);
+		break;
+	case 2:
+		printf("请输入新的VIP客户 >");
+		scanf("%s", serial);
+		strcpy(VIPlist.VIP[VIPcounter].carserial, serial);
+		VIPcounter++;
+		break;
+	case 3:
+		printf("请输入新的VIP折扣 >");
+		scanf("%f", &VIPdiscount);
+		break;
+	case 4:
+		printf("请输入新的车位数 >");
+		scanf("%d", &totalspace);
+		break;
+	}
+}
+
 void Count_earn() {
-	printf("共计在 \"%d\" 天 \"%d\" 小时，收入 \"%d\" rmb。\n", runninghour / 24, runninghour % 24, totalearn);
+	printf("共计在 \"%d\" 天 \"%d\" 小时，收入 \"%.2f\" rmb。\n", runninghour / 24, runninghour % 24, totalearn);
 }
 
 void Help() {
+	printf("\tcfg  - 更改相关参数\n");
 	printf("\tcls  - 清理历史操作\n");
 	printf("\tearn - 显示历史收入\n");
 	printf("\texit - 退出此程序\n");
@@ -91,20 +136,24 @@ void Time_jump() {
 	scanf("%d", &hour);
 	for (i = 0; i < spacepointer; i++) {
 		Parkinglot.ParkingSpace[i].time += hour;
-		runninghour += hour;
 	}
+	runninghour += hour;
 }
 
 void Leave() {
 	int i = 0;
 	int flag = 0;
+	float cost = 0.0;
 	char serial[5] = {'\0'};
-	printf("car serial:");
+	printf("请输入出库车牌号：");
 	scanf("%s", serial);
 	for (i = 0; i < spacepointer; i++) {
 		if (strcmp(Parkinglot.ParkingSpace[i].carserial, serial) == 0) {
 			flag = 1;
-			printf("车牌号 \"%s\" 请求离库，需挪动 \"%d\" 辆车，车库剩余 \"%d\" 辆车，收取停车费 \"%d\" 元。\n", serial, spacepointer - i - 1, spacepointer - 1, Parkinglot.ParkingSpace[i].time * costperhour);
+			cost = (float)(Parkinglot.ParkingSpace[i].time * costperhour);
+			if (Parkinglot.ParkingSpace[i].isVIP == 1) cost = cost * VIPdiscount;
+			totalearn = totalearn + cost;
+			printf("车牌号 \"%s\" 请求离库，需挪动 \"%d\" 辆车，车库剩余 \"%d\" 辆车，收取停车费 \"%.2f\" 元，今日总收入 \"%.2f\" 元。\n", serial, spacepointer - i - 1, spacepointer - 1, cost, totalearn);
 			for (; i < spacepointer; i++) {
 				strcpy(Parkinglot.ParkingSpace[i - 1].carserial, Parkinglot.ParkingSpace[i].carserial);
 				Parkinglot.ParkingSpace[i - 1].parkserial = Parkinglot.ParkingSpace[i].parkserial;
@@ -122,7 +171,6 @@ void Leave() {
 			break;
 		}
 	}
-	totalearn = totalearn + Parkinglot.ParkingSpace[i].time * costperhour;
 	if (flag != 1) {
 		printf("未找到车牌号，请核对后重试。\n");
 		return;
@@ -140,12 +188,21 @@ void Show_map() {
 }
 
 void Park() {
+	int i = 0;
 	char serial[5] = {'\0'};
-	printf("car serial:");
+	printf("请输入入库车牌号：");
 	scanf("%s", serial);
-	//scanf("%s", Parkinglot.ParkingSpace[spacepointer].carserial);
 	if (spacepointer < totalspace) {
 		strcpy(Parkinglot.ParkingSpace[spacepointer].carserial, serial);
+		Parkinglot.ParkingSpace[spacepointer].time = 0;
+		for (i = 0; i < VIPcounter; i++) {
+			if (strcmp(Parkinglot.ParkingSpace[spacepointer].carserial, VIPlist.VIP[i].carserial) == 0) {
+				Parkinglot.ParkingSpace[spacepointer].isVIP = 1;
+			}
+			else {
+				Parkinglot.ParkingSpace[spacepointer].isVIP = 0;
+			}
+		}
 		printf("车牌号 \"%s\" 已停放\n", Parkinglot.ParkingSpace[spacepointer].carserial);
 		spacepointer++;
 	}
@@ -160,11 +217,13 @@ void Park() {
 int Statues() {
 	int i = 0;
 	char command[20] = {"\0"};
-	for (i = 0; i <= 100; i++) {
-		Parkinglot.ParkingSpace[i].parkserial = i;
-	}
+	for (i = 0; i < totalspace; i++) Parkinglot.ParkingSpace[i].parkserial = i;
 	printf("PMS >");
 	scanf("%s", command);
+	if (strcmp(command, "cfg") == 0) {
+		Config();
+		return 9;
+	}
 	if (strcmp(command, "cls") == 0) {
 		system("cls");
 		return 1;
