@@ -1,4 +1,4 @@
-#define DEBUG
+#define RELEASE
 #define Defaultspace		1
 #define realusername		"PlanC"
 #define realuserpassword	"password"
