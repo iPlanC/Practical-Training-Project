@@ -4,8 +4,9 @@
 #define realuserpassword	"password"
 #include "included.h"
 
+//定义全局变量
 int cars = 0;
-int totalspace = 1;
+int totalspace = 3;
 float VIPdiscount = 0.0;
 int VIPcounter = 0;
 int runninghour = 0;
@@ -15,6 +16,7 @@ int costperhour = 1;
 int spacepointer = 0;
 int sidewaypointer = 0;
 
+//定义结构体
 struct vip {
 	char carserial[5];
 };
@@ -37,6 +39,10 @@ struct Parkinglot {
 struct sideway {
 	struct parkingspace ParkingSpace[1000000];
 } Sideway;
+
+//登录函数
+//类型 int
+//返回值 1  用户名错误  2 密码错误  0 无错误
 
 int Login() {
 	int i = 0;
@@ -93,20 +99,24 @@ void Config() {
 	case 1:
 		printf("请输入更改后的停车费 >");
 		scanf("%d", &costperhour);
+		printf("修改停车费成功\n");
 		break;
 	case 2:
 		printf("请输入新的VIP客户 >");
 		scanf("%s", serial);
 		strcpy(VIPlist.VIP[VIPcounter].carserial, serial);
+		printf("该用户 \"%s\" 已成功加入VIP客户\n", serial);
 		VIPcounter++;
 		break;
 	case 3:
 		printf("请输入新的VIP折扣 >");
 		scanf("%f", &VIPdiscount);
+		printf("修改折扣成功\n");
 		break;
 	case 4:
 		printf("请输入新的车位数 >");
 		scanf("%d", &totalspace);
+		printf("修改车位数成功\n");
 		break;
 	}
 }
@@ -115,6 +125,7 @@ void Count_earn() {
 	printf("共计在 \"%d\" 天 \"%d\" 小时，收入 \"%.2f\" rmb。\n", runninghour / 24, runninghour % 24, totalearn);
 }
 
+// 显示命令集
 void Help() {
 	printf("\tcfg  - 更改相关参数\n");
 	printf("\tcls  - 清理历史操作\n");
@@ -129,6 +140,7 @@ void Help() {
 	printf("  请注意，运行任何带有 \"TODO\" 标签的命令都会导致提示命令错误\n\n");
 }
 
+//跳过一段时间，需要输入时长
 void Time_jump() {
 	int i = 0;
 	int hour = 0;
@@ -138,8 +150,10 @@ void Time_jump() {
 		Parkinglot.ParkingSpace[i].time += hour;
 	}
 	runninghour += hour;
+	printf("已跳过 \"%d\" 小时\n", hour);
 }
 
+// 管理车辆离库
 void Leave() {
 	int i = 0;
 	int flag = 0;
@@ -177,6 +191,7 @@ void Leave() {
 	}
 }
 
+// 显示停车场停放情况以及停放时长
 void Show_map() {
 	int i = 0;
 	printf("共有 %d 辆汽车\n", spacepointer);
@@ -187,6 +202,7 @@ void Show_map() {
 	printf("共有 \"%d\" 辆车在便道等待。\n", sidewaypointer);
 }
 
+// 新增停入车辆，需要输入车牌号
 void Park() {
 	int i = 0;
 	char serial[5] = {'\0'};
@@ -214,59 +230,60 @@ void Park() {
 	cars++;
 }
 
+// 主功能函数，由此通往各项此功能
 int Statues() {
 	int i = 0;
 	char command[20] = {"\0"};
 	for (i = 0; i < totalspace; i++) Parkinglot.ParkingSpace[i].parkserial = i;
 	printf("PMS >");
 	scanf("%s", command);
-	if (strcmp(command, "cfg") == 0) {
+	if (strcmp(command, "cfg") == 0) { //配置车库参数
 		Config();
 		return 9;
 	}
-	if (strcmp(command, "cls") == 0) {
+	if (strcmp(command, "cls") == 0) { //清屏
 		system("cls");
 		return 1;
 	}
 
-	if (strcmp(command, "earn") == 0) {
+	if (strcmp(command, "earn") == 0) { //查看每日赚取金额
 		Count_earn();
 		return 2;
 	}
-	if (strcmp(command, "help") == 0) {
+	if (strcmp(command, "help") == 0) { //显示菜单
 		Help();
 		return 3;
 	}
 
-	if (strcmp(command, "jump") == 0) {
+	if (strcmp(command, "jump") == 0) { //增加车辆入库时间
 		Time_jump();
 		return 4;
 	}
 
-	if (strcmp(command, "left") == 0) {
+	if (strcmp(command, "left") == 0) { //车辆离库
 		Leave();
 		return 5;
 	}
 
-	if (strcmp(command, "map") == 0) {
+	if (strcmp(command, "map") == 0) { //显示停车场状况
 		Show_map();
 		return 6;
 	}
 
-	if (strcmp(command, "park") == 0) {
+	if (strcmp(command, "park") == 0) { //新增入库车辆
 		Park();
 		return 7;
 	}
 
-	if (strcmp(command, "PMS") == 0) {
+	if (strcmp(command, "PMS") == 0) { //显示自述文件
 		system("notepad .\\LICENSE");
 		return 8;
 	}
 
-	if (strcmp(command, "exit") == 0) {
+	if (strcmp(command, "exit") == 0) { //程序退出
 		printf("程序已退出\n");
 		return 0;
 	}
-	printf("未找到命令 \"%s\" ，请核对后重试。\n", command);
+	printf("未找到命令 \"%s\" ，请核对后重试。\n", command); //字面意思 未找到命令
 	return -1;
 }
